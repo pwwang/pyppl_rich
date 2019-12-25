@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyppl_rich"
-version = "0.0.1"
+version = "0.0.2"
 description = "Richer information in logs for PyPPL"
 authors = ["pwwang <pwwang@pwwang.com>"]
 license = "MIT"

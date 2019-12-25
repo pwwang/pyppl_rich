@@ -1,7 +1,7 @@
 from pyppl.plugin import hookimpl
 from pyppl.logger import logger
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 def format_dict(val, keylen, alias = None):
 	"""Format the dict values in log
@@ -54,7 +54,7 @@ def logger_init(logger):
 	"""Initiate log levels"""
 	logger.add_level('P_PROPS', 'CRITICAL')
 	logger.add_level('P_ARGS', 'CRITICAL')
-	logger.add_level('PLGCONF', 'CRITICAL')
+	logger.add_level('CONFIG', 'CRITICAL')
 	logger.add_level('INPUT', 'CRITICAL')
 	logger.add_level('OUTPUT', 'CRITICAL')
 
@@ -86,12 +86,12 @@ def proc_prerun(proc):
 			format_dict(proc.args[key], key_maxlen)), proc = proc.id)
 
 	# plugin configs
-	if proc.plugin_config:
-		key_maxlen = max(len(key) for key in proc.plugin_config)
-		for key in proc.plugin_config:
-			logger.plgconf('%s => %s' % (
+	if proc.config:
+		key_maxlen = max(len(key) for key in proc.config)
+		for key in proc.config:
+			logger.config('%s => %s' % (
 				key.ljust(key_maxlen),
-				format_dict(proc.plugin_config[key])), proc = proc.id)
+				format_dict(proc.config[key])), proc = proc.id)
 
 @hookimpl
 def job_build(job, status):

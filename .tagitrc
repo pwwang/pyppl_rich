@@ -1,6 +1,6 @@
 [TAGIT]
 ; The change log file to check when version is mentioned.
-changelog = docs/CHANGELOG.md
+changelog = py:False
 
 ; Whether publish the package after the tag pushed to server.
 publish = py:False
@@ -12,7 +12,7 @@ checksource = py:False
 checktoml = py:False
 
 ; The source file or the package name.
-versource = pyppl
+versource = pyppl_flowchart
 
 ; The toml file, typically pyproject.toml.
 vertoml = ./pyproject.toml
@@ -21,4 +21,5 @@ vertoml = ./pyproject.toml
 increment = patch
 
 ; Extra commands to run before tag committed and pushed.
-extra = py:'python api.py > docs/api.md'
+extra = py:False
+
