@@ -100,9 +100,34 @@ def job_build(job, status):
 		key_maxlen = 0
 		key_maxlen = max(key_maxlen, max(len(key) for key in job.input))
 		key_maxlen = max(key_maxlen, max(len(key) for key in job.output))
-		for key in job.input:
-			job.logger('%s => %s' % (
-				key.ljust(key_maxlen), job.input[key][1]), level = 'input')
+		for key, type_and_data in job.input.items():
+			data = type_and_data[1]
+
+			if not isinstance(data, list):
+				job.logger('%s => %s' % (
+					key.ljust(key_maxlen), data), level = 'input')
+				continue
+
+			ldata = len(data)
+			if ldata <= 1:
+				job.logger("{} => [ {} ]".format(
+					key.ljust(key_maxlen), data and data[0] or ''), level = 'input')
+			elif ldata == 2:
+				job.logger("{} => [ {},".format(
+					key.ljust(key_maxlen), data[0]), level = 'input')
+				job.logger("{}      {} ]".format(
+					' '.ljust(key_maxlen), data[1]), level = 'input')
+			else:
+				job.logger("{} => [ {},".format(
+					key.ljust(key_maxlen), data[0]), level = 'input')
+				job.logger("{}      {},".format(
+					' '.ljust(key_maxlen), data[1]), level = 'input')
+				if ldata > 3:
+					job.logger("{}      ... ({}),".format(
+						' '.ljust(key_maxlen), len(data) - 3), level = 'input')
+				job.logger("{}      {} ]".format(
+					' '.ljust(key_maxlen), data[-1]), level = 'input')
+
 		for key in job.output:
 			job.logger('%s => %s' % (
 				key.ljust(key_maxlen), job.output[key][1]), level = 'output')
