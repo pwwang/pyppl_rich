@@ -10,6 +10,7 @@ python = "^3.6"
 pyppl = "*"
 
 [tool.poetry.dev-dependencies]
+cmdy = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]

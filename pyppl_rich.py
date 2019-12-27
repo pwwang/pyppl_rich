@@ -1,3 +1,5 @@
+"""Richer information in logs for PyPPL"""
+import re
 from pyppl.plugin import hookimpl
 from pyppl.logger import logger
 
@@ -28,7 +30,7 @@ def format_dict(val, keylen, alias = None):
 	if len(val) == 0:
 		return alias + valtype + '{  }'
 	if len(val) == 1:
-		return formatDict(alias + valtype + '{ %s: %s }' % list(val.items())[0], 0)
+		return format_dict(alias + valtype + '{ %s: %s }' % list(val.items())[0], 0)
 
 	valkeylen = max(len(key) for key in val)
 	ret = [alias + valtype]
@@ -36,7 +38,8 @@ def format_dict(val, keylen, alias = None):
 	if not alias or not valtype:
 		braceindt = len(alias + valtype)
 		ret[0] += '{ %s: %s,' % (
-			key0.ljust(valkeylen), repr(val0) if val0 == '' else val0)
+			key0.ljust(valkeylen), repr(val0) \
+				if isinstance(val0, str) and re.search(r'\s+', val0) else val0)
 	else:
 		braceindt = len(alias)
 
@@ -45,16 +48,17 @@ def format_dict(val, keylen, alias = None):
 			continue
 		fmt = '%s{ %s: %s,' if keyi == key0 else '%s  %s: %s,'
 		ret.append(fmt % (' ' * (braceindt + keylen + 4),
-			keyi.ljust(valkeylen), repr(vali) if vali == '' else vali))
+			keyi.ljust(valkeylen), repr(vali) \
+				if isinstance(vali, str) and re.search(r'\s+', vali) else vali))
 	ret[-1] += ' }'
 	return '\n'.join(ret)
 
 @hookimpl
-def logger_init(logger):
+def logger_init(logger): # pylint: disable=redefined-outer-name
 	"""Initiate log levels"""
 	logger.add_level('P_PROPS', 'CRITICAL')
 	logger.add_level('P_ARGS', 'CRITICAL')
-	logger.add_level('CONFIG', 'CRITICAL')
+	logger.add_level('PCONFIG', 'CRITICAL')
 	logger.add_level('INPUT', 'CRITICAL')
 	logger.add_level('OUTPUT', 'CRITICAL')
 
@@ -78,8 +82,10 @@ def proc_prerun(proc):
 		logger.p_props('%s => %s' % (
 			key.ljust(key_maxlen),
 			format_dict(getattr(proc, key), key_maxlen)), proc = proc.id)
-	logger.p_props('runner => %s [profile: %s]' % (
-		proc.runner.runner, proc._runner), proc = proc.id)
+	logger.p_props('runner => %s %s' % (
+		proc.runner.runner,
+		('[profile: %s]' % proc._runner) if not isinstance(proc._runner, dict) else ''
+		), proc = proc.id)
 	for key in args_keys:
 		logger.p_args('%s => %s' % (
 			key.ljust(key_maxlen),
@@ -89,12 +95,15 @@ def proc_prerun(proc):
 	if proc.config:
 		key_maxlen = max(len(key) for key in proc.config)
 		for key in proc.config:
-			logger.config('%s => %s' % (
+			if proc.config._meta.setcounter.get(key, 0) == 0:
+				continue
+			# only if the plugin config is explicitly set
+			logger.pconfig('%s => %s' % (
 				key.ljust(key_maxlen),
-				format_dict(proc.config[key])), proc = proc.id)
+				format_dict(proc.config[key], keylen = key_maxlen)), proc = proc.id)
 
 @hookimpl
-def job_build(job, status):
+def job_build(job, status): # pylint: disable=unused-argument
 	"""Log INPUT and OUTPUT and job #0 after job is built"""
 	if job.index == 0:
 		key_maxlen = 0

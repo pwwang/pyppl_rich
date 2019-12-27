@@ -15,8 +15,8 @@ readme = ''
 setup(
     long_description=readme,
     name='pyppl_rich',
-    version='0.0.1',
-    description='Richer informtion in logs for PyPPL',
+    version='0.0.2',
+    description='Richer information in logs for PyPPL',
     python_requires='==3.*,>=3.6.0',
     author='pwwang',
     author_email='pwwang@pwwang.com',
@@ -26,4 +26,5 @@ setup(
     package_dir={"": "."},
     package_data={},
     install_requires=['pyppl'],
+    extras_require={"dev": ["cmdy"]},
 )
