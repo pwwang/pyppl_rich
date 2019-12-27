@@ -1,8 +1,12 @@
+[build-system]
+requires = [ "poetry>=0.12",]
+build-backend = "poetry.masonry.api"
+
 [tool.poetry]
 name = "pyppl_rich"
-version = "0.0.2"
+version = "0.0.3"
 description = "Richer information in logs for PyPPL"
-authors = ["pwwang <pwwang@pwwang.com>"]
+authors = [ "pwwang <pwwang@pwwang.com>",]
 license = "MIT"
 
 [tool.poetry.dependencies]
@@ -11,10 +15,6 @@ pyppl = "*"
 
 [tool.poetry.dev-dependencies]
 cmdy = "*"
-
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
 
 [tool.poetry.plugins.pyppl]
 pyppl_rich = "pyppl_rich"

@@ -15,7 +15,7 @@ readme = ''
 setup(
     long_description=readme,
     name='pyppl_rich',
-    version='0.0.2',
+    version='0.0.3',
     description='Richer information in logs for PyPPL',
     python_requires='==3.*,>=3.6.0',
     author='pwwang',
