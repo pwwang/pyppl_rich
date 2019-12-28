@@ -1,2 +1,4 @@
 cmdy
 pyppl
+pytest
+pytest-cov

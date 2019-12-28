@@ -26,5 +26,5 @@ setup(
     package_dir={"": "."},
     package_data={},
     install_requires=['pyppl'],
-    extras_require={"dev": ["cmdy"]},
+    extras_require={"dev": ["cmdy", "pytest", "pytest-cov"]},
 )

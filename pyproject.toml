@@ -14,6 +14,8 @@ python = "^3.6"
 pyppl = "*"
 
 [tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-cov = "*"
 cmdy = "*"
 
 [tool.poetry.plugins.pyppl]
