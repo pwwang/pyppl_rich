@@ -14,4 +14,4 @@ p1 = Proc(
 p1.input = [__file__] *5, __file__, [__file__], [__file__]*2
 p1.forks = 2
 
-PyPPL(ppldir = gettempdir() + 'pyppl_rich_tests').start(p1).run()
+PyPPL(ppldir = gettempdir() + '/pyppl_rich_tests').start(p1).run()
