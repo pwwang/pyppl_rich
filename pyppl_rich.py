@@ -1,10 +1,17 @@
 """Richer information in logs for PyPPL"""
 import re
 import time
+from os import path
 from pyppl.plugin import hookimpl
 from pyppl.logger import logger
 from pyppl.config import config
 from pyppl.utils import format_secs
+from pyppl._proc import (OUT_FILETYPE,
+                         OUT_DIRTYPE,
+                         OUT_STDOUTTYPE,
+                         OUT_STDERRTYPE,
+                         IN_FILETYPE,
+                         IN_FILESTYPE)
 
 __version__ = '0.0.2'
 
@@ -153,7 +160,14 @@ def job_build(job, status):  # pylint: disable=unused-argument
         key_maxlen = max(key_maxlen, max(len(key) for key in job.input))
         key_maxlen = max(key_maxlen, max(len(key) for key in job.output))
         for key, type_and_data in job.input.items():
-            data = type_and_data[1]
+            dtype, data = type_and_data
+            if dtype in IN_FILETYPE:
+                data = '<workdir>/%s/input/%s' % (job.index + 1,
+                                                  path.basename(data))
+            elif dtype in IN_FILESTYPE:
+                data = ['<workdir>/%s/input/%s' % (job.index + 1,
+                                                   path.basename(dat))
+                        for dat in data]
 
             if not isinstance(data, list):
                 job.logger('%s => %s' % (key.ljust(key_maxlen), data),
@@ -189,6 +203,13 @@ def job_build(job, status):  # pylint: disable=unused-argument
                            level='input')
 
         for key in job.output:
+            dtype, data = type_and_data = job.output[key]
+            if dtype in OUT_DIRTYPE + OUT_FILETYPE:
+                data = '<workdir>/%s/output/%s' % (job.index + 1,
+                                                   path.basename(data))
+            elif dtype in OUT_STDOUTTYPE + OUT_STDERRTYPE:
+                data = '<workdir>/%s/%s' % (job.index + 1,
+                                            path.basename(data))
             job.logger('%s => %s' %
-                       (key.ljust(key_maxlen), job.output[key][1]),
+                       (key.ljust(key_maxlen), data),
                        level='output')
