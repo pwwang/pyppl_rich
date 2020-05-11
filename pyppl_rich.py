@@ -3,7 +3,7 @@ import re
 import time
 from os import path
 from pyppl.plugin import hookimpl
-from pyppl.logger import logger
+from pyppl.logger import Logger
 from pyppl.config import config
 from pyppl.utils import format_secs
 from pyppl._proc import (OUT_FILETYPE,
@@ -14,6 +14,8 @@ from pyppl._proc import (OUT_FILETYPE,
                          IN_FILESTYPE)
 
 __version__ = '0.0.2'
+
+logger = Logger(plugin='rich') # pylint: disable=invalid-name
 
 
 def format_dict(val, keylen, alias=None):
@@ -78,7 +80,6 @@ def logger_init(logger):  # pylint: disable=redefined-outer-name
     logger.add_level('P_CONF', 'CRITICAL')
     logger.add_level('INPUT', 'CRITICAL')
     logger.add_level('OUTPUT', 'CRITICAL')
-
 
 @hookimpl
 def proc_prerun(proc):
