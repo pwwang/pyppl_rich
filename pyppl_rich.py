@@ -13,7 +13,7 @@ from pyppl._proc import (OUT_FILETYPE,
                          IN_FILETYPE,
                          IN_FILESTYPE)
 
-__version__ = '0.0.2'
+__version__ = "0.0.4"
 
 logger = Logger(plugin='rich') # pylint: disable=invalid-name
 
